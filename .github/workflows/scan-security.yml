@@ -1,0 +1,18 @@
+name: Scan Security Backend
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: self-hosted
+    container: sonarsource/sonar-scanner-cli:latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: |
+          sonar-scanner -X -Dsonar.projectBaseDir=. -Dsonar.projectKey="$SONAR_PROJECT_KEY" -Dsonar.sources=. -Dsonar.host.url="$SONAR_HOST_URL" -Dsonar.token="$SONAR_TOKEN" -Dsonar.plugins.downloadOnlyRequired=true -Dsonar.cache.enabled=true -Dsonar.ws.timeout=600
